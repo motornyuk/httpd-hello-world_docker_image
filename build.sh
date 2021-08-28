@@ -5,7 +5,7 @@
 docker_server="docker.io"
 
 # Docker repo
-docker_repo="motornyuk/http-hello-world"
+docker_repo="motornyuk/httpd-hello-world"
 
 # GiHub repo
 gitlab_repo="motornyuk/http-hello-world_docker_image.git"
