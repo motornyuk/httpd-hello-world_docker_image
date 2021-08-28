@@ -52,7 +52,7 @@ function build() {
 # Push to github
 function git() {
   git="/usr/bin/git -C ./"
-  ${git} pull "${git_server}":"${git_repo}" >> "${log}" || except "git pull failed!"
+  ${git} -C './' pull "${git_server}":"${git_repo}" >> "${log}" || except "git pull failed!"
   ${git} add --all >> "${log}" || except "git add failed!"
   ${git} commit -a -m "Automatic build ${docker_repo}:${docker_tag}" >> "${log}" || except "git commit failed!"
   ${git} push >> "${log}" || except "git push failed!"
