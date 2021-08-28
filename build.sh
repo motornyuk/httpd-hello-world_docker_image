@@ -7,6 +7,9 @@ docker_server="docker.io"
 # Docker repo
 docker_repo="motornyuk/httpd-hello-world"
 
+# Docker tag
+docker_tag="latest"
+
 # Git server
 git_server="git@github.com"
 
@@ -41,9 +44,9 @@ logger "Starting Build. Timestamp: ${timestp}\n"
 # Build the image
 function build() {
   local cmd
-  cmd="docker build . -t ${docker_server}/${docker_repo}:latest >> ${log}"
+  cmd="docker build . -t ${docker_server}/${docker_repo}:${docker_tag} >> ${log}"
   logger "Running Docker Build Command: \"$cmd\""
-  docker build . -t "${docker_server}"/"${docker_repo}":latest >> "${log}" || except "Error! docker build failed"
+  docker build . -t "${docker_server}"/"${docker_repo}":"${docker_tag}" >> "${log}" || except "Error! docker build failed"
 }
 
 # Push to github
@@ -57,8 +60,8 @@ function git() {
 
 # Push the new tag to Docker
 function docker_push() {
-  echo "Pushing ${docker_repo}:latest..."
-  docker push "${docker_repo}":latest >> "${log}" || except "docker image ${docker_repo}:latest push failed!"
+  echo "Pushing ${docker_repo}:${docker_tag}..."
+  docker push "${docker_repo}":"${docker_tag}" >> "${log}" || except "docker image ${docker_repo}:${docker_tag} push failed!"
 }
 
 # Prune the git tree in the local dir
