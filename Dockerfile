@@ -1,3 +1,5 @@
+# 'Version: 20210828.01'
+
 FROM alpine:latest
 
 RUN apk --no-cache update
