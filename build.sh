@@ -7,12 +7,15 @@ docker_server="docker.io"
 # Docker repo
 docker_repo="motornyuk/httpd-hello-world"
 
-# GiHub repo
-gitlab_repo="motornyuk/http-hello-world_docker_image.git"
+# Git server
+git_server="git@github.com"
+
+# Gi repo
+git_repo="motornyuk/http-hello-world_docker_image.git"
 
 # Log file
 declare -r log="./log_build.log"
-cat /dev/null > $log
+cat /dev/null > "${log}"
 
 # Generate timestamp
 function timestamp() {
@@ -22,7 +25,7 @@ function timestamp() {
 # Log and Print
 logger() {
     printf "$1\n"
-    printf "$(timestamp) - $1\n" >> $log
+    printf "$(timestamp) - $1\n" >> "${log}"
 }
 
 # Exception Catcher
@@ -33,33 +36,29 @@ except () {
 
 # Assign timestamp to ensure var is a static point in time.
 declare -r timestp=$(timestamp)
-logger "Starting Build. Timestamp: $timestp\n"
+logger "Starting Build. Timestamp: ${timestp}\n"
 
-# Build the image using timestamp as tag.
+# Build the image
 function build() {
   local cmd
-  cmd="docker build . -t ${docker_server}/${docker_repo}:$timestp >> $log"
+  cmd="docker build . -t ${docker_server}/${docker_repo}:latest >> ${log}"
   logger "Running Docker Build Command: \"$cmd\""
-  docker build . -t "${docker_server}"/"${docker_repo}":$timestp >> $log || except "Error! docker build failed"
+  docker build . -t "${docker_server}"/"${docker_repo}":latest >> "${log}" || except "Error! docker build failed"
 }
 
-# Push to github - Triggers builds in github and Dockerhub.
+# Push to github
 function git() {
   git="/usr/bin/git -C ./"
-  $git -C './' pull git@github.com:"${gitlab_repo}" >> $log || except "git pull failed!"
-  $git add --all >> $log || except "git add failed!"
-  $git commit -a -m 'Automatic build '$timestp >> $log || except "git commit failed!"
-  $git push >> $log || except "git push failed!"
+  ${git} pull "${git_server}":"${git_repo}" >> "${log}" || except "git pull failed!"
+  ${git} add --all >> "${log}" || except "git add failed!"
+  ${git} commit -a -m "Automatic build ${timestp}" >> "${log}" || except "git commit failed!"
+  ${git} push >> "${log}" || except "git push failed!"
 } 
 
-# Push the new tag to Dockerhub.
+# Push the new tag to Docker
 function docker_push() {
-  echo "Pushing ${docker_repo}:$timestp..."
-  docker push "${docker_repo}":$timestp >> $log || except "docker image ${docker_repo}:$timestp push failed!"
-  echo "Tagging ${docker_repo}:$timestp..."
-  docker tag "${docker_repo}":$timestp "${docker_server}"/"${docker_repo}":latest >> $log || except "docker image ${docker_repo}:$timestp tag failed!"
   echo "Pushing ${docker_repo}:latest..."
-  docker push "${docker_repo}":latest >> $log || except "docker image ${docker_repo}:latest push failed!"
+  docker push "${docker_repo}":latest >> "${log}" || except "docker image ${docker_repo}:latest push failed!"
 }
 
 # Prune the git tree in the local dir

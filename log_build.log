@@ -1,4 +1,4 @@
-20210828_124037 - Starting Build. Timestamp: 20210828_124037
+20210828_150148 - Starting Build. Timestamp: 20210828_150148
 
-20210828_124037 - Running Docker Build Command: "docker build . -t docker.io/motornyuk/httpd-hello-world:20210828_124037 >> ./log_build.log"
+20210828_150148 - Running Docker Build Command: "docker build . -t docker.io/motornyuk/httpd-hello-world:latest >> ./log_build.log"
 Already up to date.
